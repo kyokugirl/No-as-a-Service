@@ -1,7 +1,13 @@
-FROM sbtscala/scala-sbt:eclipse-temurin-alpine-23.0.2_7_1.10.11_3.6.4
+FROM sbtscala/scala-sbt:graalvm-community-22.0.1_1.10.11_3.6.4 AS builder
 
 WORKDIR /service
 COPY . .
-RUN cd /service && sbt compile
+RUN cd /service && sbt "show GraalVMNativeImage/packageBin"
+
+FROM debian:bookworm-slim
+
+WORKDIR /service
+COPY --from=builder /service/target/graalvm-native-image .
+COPY src/main/resources src/main/resources
 EXPOSE 3000
-CMD sbt run
+CMD ["./No-as-a-Service"]
