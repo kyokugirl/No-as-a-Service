@@ -32,3 +32,4 @@
 **/.idea_modules
 .worksheet
 fly.toml
+Dockerfile
